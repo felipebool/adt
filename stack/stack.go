@@ -1,80 +1,41 @@
 package stack
 
-import "fmt"
+import (
+	"errors"
 
-type Node struct {
-	Value int
-	Next  *Node
+	"github.com/felipebool/adt/list"
+)
+
+var ErrEmptyStack = errors.New("empty stack")
+
+type Stack interface {
+	Push(value int)
+	Pop() (int, error)
+	String() string
 }
 
-type Stack struct {
-	Root  *Node
-	Count int
+type stack struct {
+	list list.LinkedList
 }
 
-func (s *Stack) Push(value int) {
-	node := Node{
-		Value: value,
-		Next:  nil,
-	}
-
-	if s.Count == 0 {
-		s.Root = &node
-		s.Count++
-		return
-	}
-
-	current := s.Root
-	for current.Next != nil {
-		current = current.Next
-	}
-
-	current.Next = &node
-	s.Count++
+func (s *stack) Push(value int) {
+	s.list.PushFront(value)
 }
 
-func (s *Stack) Pop() *Node {
-	if s.Count == 0 {
-		return &Node{}
+func (s *stack) Pop() (int, error) {
+	if s.list.Empty() {
+		return -1, ErrEmptyStack
 	}
 
-	current := s.Root
-
-	if s.Count == 1 {
-		s.Count--
-		s.Root = nil
-
-		return current
-	}
-
-	previous := current
-	for current.Next != nil {
-		previous = current
-		current = current.Next
-	}
-
-	previous.Next = nil
-
-	s.Count--
-	return current
+	return s.list.PopFront()
 }
 
-func (s *Stack) String() string {
-	result := ""
-
-	if s.Root == nil {
-		return result
-	}
-
-	current := s.Root
-	for current.Next != nil {
-		result += fmt.Sprintf("%d -> ", current.Value)
-		current = current.Next
-	}
-
-	return result + fmt.Sprintf("%d", current.Value)
+func (s *stack) String() string {
+	return s.list.String()
 }
 
-func NewStack() *Stack {
-	return &Stack{}
+func NewStack() Stack {
+	return &stack{
+		list: list.NewSinglyLinkedList(),
+	}
 }

@@ -1,78 +1,41 @@
 package queue
 
-import "fmt"
+import (
+	"errors"
 
-type Node struct {
-	Value int
-	Next *Node
+	"github.com/felipebool/adt/list"
+)
+
+var ErrEmptyQueue = errors.New("empty queue")
+
+type Queue interface {
+	Enqueue(value int)
+	Dequeue() (int, error)
+	String() string
 }
 
-type Queue struct {
-	Root *Node
-	Count int
+type queue struct {
+	list list.LinkedList
 }
 
-func (q *Queue) Enqueue(value int) {
-	node := Node{
-		Value: value,
-		Next:  nil,
-	}
-
-	if q.IsEmpty() {
-		q.Root = &node
-		q.Count++
-		return
-	}
-
-	current := q.Root
-	for current.Next != nil {
-		current = current.Next
-	}
-
-	current.Next = &node
-	q.Count++
+func (q *queue) Enqueue(value int) {
+	q.list.PushBack(value)
 }
 
-func (q *Queue) Dequeue() *Node {
-	if q.IsEmpty() {
-		return &Node{}
+func (q *queue) Dequeue() (int, error) {
+	if q.list.Empty() {
+		return -1, ErrEmptyQueue
 	}
 
-	if q.Root.Next != nil {
-		node := q.Root
-		q.Root = q.Root.Next
-		q.Count--
-
-		return node
-	}
-
-	node := q.Root
-	q.Root = nil
-	q.Count--
-
-	return node
+	return q.list.PopFront()
 }
 
-func (q *Queue) IsEmpty() bool {
-	return q.Count == 0
+func (q *queue) String() string {
+	return q.list.String()
 }
 
-func (q *Queue) String() string {
-	result := ""
-
-	if q.IsEmpty() {
-		return result
+func NewQueue() Queue {
+	return &queue{
+		list: list.NewSinglyLinkedList(),
 	}
-
-	current := q.Root
-	for current.Next != nil {
-		result += fmt.Sprintf("%d -> ", current.Value)
-		current = current.Next
-	}
-
-	return result + fmt.Sprintf("%d", current.Value)
-}
-
-func NewQueue() *Queue {
-	return &Queue{}
 }
