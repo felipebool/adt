@@ -144,7 +144,7 @@ func (sll *SinglyLinkedList) PushBefore(value int, before int) error {
 	}
 
 	previous.next = &newNode
-	newNode.next = current	
+	newNode.next = current
 	sll.size++
 
 	return nil
