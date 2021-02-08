@@ -1,6 +1,7 @@
 package binary_test
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/felipebool/adt/tree"
@@ -9,33 +10,33 @@ import (
 func TestTree_Add(t *testing.T) {
 	cases := map[string]struct {
 		input             []int
-		expectedInOrder   string
-		expectedPreOrder  string
-		expectedPostOrder string
+		expectedInOrder   []int
+		expectedPreOrder  []int
+		expectedPostOrder []int
 	}{
 		"empty tree": {
 			input:             []int{},
-			expectedInOrder:   "()",
-			expectedPreOrder:  "()",
-			expectedPostOrder: "()",
+			expectedInOrder:   []int{},
+			expectedPreOrder:  []int{},
+			expectedPostOrder: []int{},
 		},
 		"single element": {
 			input:             []int{1},
-			expectedInOrder:   "(1)",
-			expectedPreOrder:  "(1)",
-			expectedPostOrder: "(1)",
+			expectedInOrder:   []int{1},
+			expectedPreOrder:  []int{1},
+			expectedPostOrder: []int{1},
 		},
 		"multiple elements": {
 			input:             []int{3, 1, 4},
-			expectedInOrder:   "(1)(3)(4)",
-			expectedPreOrder:  "(3)(1)(4)",
-			expectedPostOrder: "(1)(4)(3)",
+			expectedInOrder:   []int{1, 3, 4},
+			expectedPreOrder:  []int{3, 1, 4},
+			expectedPostOrder: []int{1, 4, 3},
 		},
 		"repeated elements": {
 			input:             []int{3, 1, 4, 4},
-			expectedInOrder:   "(1)(3)(4)",
-			expectedPreOrder:  "(3)(1)(4)",
-			expectedPostOrder: "(1)(4)(3)",
+			expectedInOrder:   []int{1, 3, 4},
+			expectedPreOrder:  []int{3, 1, 4},
+			expectedPostOrder: []int{1, 4, 3},
 		},
 	}
 
@@ -50,18 +51,18 @@ func TestTree_Add(t *testing.T) {
 			}
 
 			gotInOrder := bt.InOrder()
-			if gotInOrder != tc.expectedInOrder {
-				t.Errorf("in order - got: %s; expected: %s", gotInOrder, tc.expectedInOrder)
+			if !reflect.DeepEqual(gotInOrder, tc.expectedInOrder) {
+				t.Errorf("in order - got: %+v; expected: %+v", gotInOrder, tc.expectedInOrder)
 			}
 
 			gotPreOrder := bt.PreOrder()
-			if gotPreOrder != tc.expectedPreOrder {
-				t.Errorf("pre order - got: %s; expected: %s", gotPreOrder, tc.expectedPreOrder)
+			if !reflect.DeepEqual(gotPreOrder, tc.expectedPreOrder) {
+				t.Errorf("pre order - got: %+v; expected: %+v", gotPreOrder, tc.expectedPreOrder)
 			}
 
 			gotPostOrder := bt.PostOrder()
-			if gotPostOrder != tc.expectedPostOrder {
-				t.Errorf("post order - got: %s; expected: %s", gotPostOrder, tc.expectedPostOrder)
+			if !reflect.DeepEqual(gotPostOrder, tc.expectedPostOrder) {
+				t.Errorf("post order - got: %+v; expected: %+v", gotPostOrder, tc.expectedPostOrder)
 			}
 		})
 	}

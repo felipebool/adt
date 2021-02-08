@@ -1,17 +1,24 @@
 package tree
 
-import "github.com/felipebool/adt/tree/binary"
+import (
+	"github.com/felipebool/adt/tree/avl"
+	"github.com/felipebool/adt/tree/binary"
+)
 
-type Binary interface {
-	Add(value int)
-	Remove(value int) error
-	Search(value int) bool
+type Tree interface {
+	Add(key int)
+	Remove(key int)
+	Search(key int) bool
 	Empty() bool
-	InOrder() string
-	PreOrder() string
-	PostOrder() string
+	InOrder() []int
+	PreOrder() []int
+	PostOrder() []int
 }
 
-func NewBinaryTree() Binary {
+func NewBinaryTree() Tree {
 	return &binary.Tree{}
+}
+
+func NewAVLTree() Tree {
+	return &avl.Tree{}
 }
